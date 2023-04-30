@@ -1,12 +1,16 @@
 h1 {
    margin-left: auto;
    margin-right: auto;
-   color: #ff0000
+   max-width: 450px;
+   color: #ff0000;
+   padding: 5px;
 }
 h2 {
    margin-left: auto;
    margin-right: auto;
-   color: #000000
+   max-width: 380px;
+   color: #000000;
+   padding: 5px;
 }
 
 form.login_form {
@@ -17,4 +21,9 @@ form.login_form {
     border: 1px solid gray;
     border-radius: 5px;
     padding: 10px;
+}
+
+img {
+    width: 300px;
+    height: auto
 }
