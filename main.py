@@ -3,6 +3,19 @@ from flask import Flask, url_for, request
 
 app = Flask(__name__)
 
+args = {
+    'Земля': ['Не нужно никуда лететь, пока всего хватает на Земле'],
+    'Марс': ['Эта планета близка к Земле;',
+             ('На ней много необходимых ресурсов;', "success"),
+             ('На ней есть вода и атмосфера;', "secondary"),
+             ('На ней есть большое магнитное поле;', "warning"),
+             ('Наконец, она просто красива!', "danger")],
+    'Луна': ['Не планета, но ближе всех к Земле;',
+             ('Слабая гравитация - это весело!', "primary")],
+    'Сатурн': ['Можно обустраиваться на его кольцах;',
+               ('Газовый гигант;', 'secondary'),
+               ('На его спутниках есть вода.', 'primary')]
+}
 
 def gen_alert(name, type):
     return f'''<div class="alert alert-{type}" role="alert">
@@ -58,49 +71,30 @@ def ad():
                 </html>"""
 
 
-@app.route('/carousel')
-def carousel():
+@app.route('/choice/<planet_name>')
+def choice(planet_name):
+    h2 = ""
+    res = ""
+    if planet_name in args:
+        h2 = args[planet_name][0]
+        for v, t in args[planet_name][1:]:
+            res += f'<h2>{gen_alert(v, t)}</h2>\n'
+    else:
+        h2 = gen_alert('Потому что эта планета красива!', 'danger')
     return f'''<!doctype html>
                 <html lang="en">
-                <head>
+                  <head>
                     <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-                    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
-                    <title>Пейзажи Марса</title>
-                </head>
-                <body>
-                    <h1>Пейзажи Марса</h1>
-                    <div id="carouselExample" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExample" data-slide-to="0" class="active"></li>
-                            <li data-target="#carouselExample" data-slide-to="1"></li>
-                            <li data-target="#carouselExample" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="{url_for('static', filename='img/landscape1.jpg')}" class="d-block w-100" alt="First Slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="{url_for('static', filename='img/landscape2.jpg')}" class="d-block w-100" alt="Second Slide">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="{url_for('static', filename='img/landscape3.jpg')}" class="d-block w-100" alt="Third Slide">
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" role="button" href="#carouselExample" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        </a>
-                        <a class="carousel-control-next" role="button" href="#carouselExample" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        </a>
-                    </div>
-                </body>
-                </html>'''
-
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+                    <title>Варанты выбора</title>
+                  </head>
+                  <body>
+                    <h1>Моё предложение: {planet_name}</h1>
+                    <h2>{h2}</h2>
+                    {res}
+                  </body>
+                </html>
+    '''
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
