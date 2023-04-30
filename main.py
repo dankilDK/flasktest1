@@ -3,20 +3,6 @@ from flask import Flask, url_for, request
 
 app = Flask(__name__)
 
-args = {
-    'Земля': ['Не нужно никуда лететь, пока всего хватает на Земле'],
-    'Марс': ['Эта планета близка к Земле;',
-             ('На ней много необходимых ресурсов;', "success"),
-             ('На ней есть вода и атмосфера;', "secondary"),
-             ('На ней есть большое магнитное поле;', "warning"),
-             ('Наконец, она просто красива!', "danger")],
-    'Луна': ['Не планета, но ближе всех к Земле;',
-             ('Слабая гравитация - это весело!', "primary")],
-    'Сатурн': ['Можно обустраиваться на его кольцах;',
-               ('Газовый гигант;', 'secondary'),
-               ('На его спутниках есть вода.', 'primary')]
-}
-
 def gen_alert(name, type):
     return f'''<div class="alert alert-{type}" role="alert">
                     {name}
@@ -71,27 +57,21 @@ def ad():
                 </html>"""
 
 
-@app.route('/choice/<planet_name>')
-def choice(planet_name):
-    h2 = ""
-    res = ""
-    if planet_name in args:
-        h2 = args[planet_name][0]
-        for v, t in args[planet_name][1:]:
-            res += f'<h2>{gen_alert(v, t)}</h2>\n'
-    else:
-        h2 = gen_alert('Потому что эта планета красива!', 'danger')
+@app.route('/results/<nickname>/<int:level>/<float:rating>')
+def choice(nickname, level, rating):
     return f'''<!doctype html>
                 <html lang="en">
                   <head>
                     <meta charset="utf-8">
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-                    <title>Варанты выбора</title>
+                    <title>Результаты</title>
                   </head>
                   <body>
-                    <h1>Моё предложение: {planet_name}</h1>
-                    <h2>{h2}</h2>
-                    {res}
+                    <h1>Результаты отбора</h1>
+                    <h2>Претендента на участие в миссии {nickname}:</h2>
+                    <h3>{gen_alert(f'Поздравляем! Ваш рейтинг после {level} этапа отбора', 'success')}</h3>
+                    <h3>Составляет {rating}!</h3>
+                    <h3>{gen_alert('Желаем удачи!', 'warning')}</h3>
                   </body>
                 </html>
     '''
